@@ -1,7 +1,8 @@
 [project]
 name = "dense_ev"
-version = "2023.05.21"
+version = "2023.05.22"
 description = "Qiskit expectation values using optimal dense grouping."
+readme = "README.md"
 authors = [
     {name = "Andrew Lytle", email="atlytle@illinois.edu"},
 ]
@@ -9,6 +10,10 @@ dependencies = [
     "qiskit < 0.43.0",
     "psfam"
 ]
+license = {file = "LICENSE.txt"}
+
+[project.urls]
+"Homepage" = "https://github.com/atlytle/dense-ev"
 
 [build-system]
 requires = ["setuptools >= 61.0.0"]

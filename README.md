@@ -1,4 +1,4 @@
-# dense_EV
+# dense_ev
 **dense_ev** implements expectation value measurements in Qiskit using optimal
 dense grouping [arXiv:quant-ph/2305.xxxx](). For an $m$-qubit operator
 that includes all Pauli strings in its decomposition, 
@@ -10,9 +10,19 @@ Create a virtual environment to sandbox the installation (optional):
 ```bash
 python3 -m venv test-env && source ./test-env/bin/activate
 ```
+To install,
+```bash
+pip install dense-ev
+```
 Install from GitHub:
 ```bash
-pip install git+ssh://git@github.com/atlytle/dense-ev-test.git
+pip install git+ssh://git@github.com/atlytle/dense-ev.git
+```
+To run unit tests,
+```python
+from dense_ev.test_op import run_unit_tests
+
+run_unit_tests()
 ```
 
 ### Qiskit version compatibility
