@@ -1,0 +1,18 @@
+[project]
+name = "dense_ev"
+version = "2023.05.21"
+description = "Qiskit expectation values using optimal dense grouping."
+authors = [
+    {name = "Andrew Lytle", email="atlytle@illinois.edu"},
+]
+dependencies = [
+    "qiskit < 0.43.0",
+    "psfam"
+]
+
+[build-system]
+requires = ["setuptools >= 61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
