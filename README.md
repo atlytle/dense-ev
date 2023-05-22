@@ -1,6 +1,7 @@
 # dense_ev
 **dense_ev** implements expectation value measurements in Qiskit using optimal
-dense grouping [arXiv:quant-ph/2305.xxxx](). For an $m$-qubit operator
+dense grouping [arXiv:quant-ph/2305.11847](https://arxiv.org/abs/2305.11847). 
+For an $m$-qubit operator
 that includes all Pauli strings in its decomposition, 
 it provides a speedup of $2^m$ compared to naive evaluation of all strings,
 and $(3/2)^m$ compared to grouping based on qubit-wise commuting (QWC) families.
@@ -20,7 +21,7 @@ pip install git+ssh://git@github.com/atlytle/dense-ev.git
 ```
 To run unit tests,
 ```python
-from dense_ev.test_op import run_unit_tests
+from dense_ev.test_ops import run_unit_tests
 
 run_unit_tests()
 ```
