@@ -2,8 +2,10 @@
 import unittest
 
 from myrandom import Random
-#import dense_ev
+
+# import dense_ev
 from dense_ev._test_ops import unit_test
+
 
 class TestRandom(unittest.TestCase):
     """Tests Random class implementation."""
@@ -14,9 +16,10 @@ class TestRandom(unittest.TestCase):
 
         self.assertEqual(random.run(2), 4)
 
+
 class TestRmatrix(unittest.TestCase):
     """Test rmatrix function."""
 
     def test_run(self):
         unit_test(2)
-        self.assertEqual(1,1)
+        self.assertEqual(1, 1)

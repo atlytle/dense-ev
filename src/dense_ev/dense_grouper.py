@@ -29,8 +29,9 @@ from qiskit.opflow.state_fns.operator_state_fn import OperatorStateFn
 from dense_ev.rmatrix import get_groups, get_groups2
 from math import log
 
+
 class DenseGrouper(ConverterBase):
-    """The DenseGrouper converts SummedOps into a sum of sums, 
+    """The DenseGrouper converts SummedOps into a sum of sums,
     organized by optimal dense family groupings.
 
     Meaning, it will traverse the Operator, and when it finds a SummedOp, it will evaluate which of
@@ -106,24 +107,30 @@ class DenseGrouper(ConverterBase):
             # Roundabout way of getting m.
             primitive = list_op.primitive
             m = int(log(primitive[0].to_matrix().shape[0], 2))
-            #print(f'{m = }')
-            #print(f'{primitive = }')
-            #print(f'{len(primitive) = }')
+            # print(f'{m = }')
+            # print(f'{primitive = }')
+            # print(f'{len(primitive) = }')
             if len(primitive) == 4**m:
                 groups = get_groups2(list_op, m)
                 result = SummedOp(
-                    [PauliSumOp(primitive[group], grouping_type="TPB") for group in groups.values()],
+                    [
+                        PauliSumOp(primitive[group], grouping_type="TPB")
+                        for group in groups.values()
+                    ],
                     coeff=list_op.coeff,
                 )
 
             else:
                 groups = get_groups2(list_op, m)
                 result = SummedOp(
-                    [PauliSumOp(primitive[group], grouping_type="TPB") for group in groups.values()],
+                    [
+                        PauliSumOp(primitive[group], grouping_type="TPB")
+                        for group in groups.values()
+                    ],
                     coeff=list_op.coeff,
                 )
             return result
-        
+
         group_ops: List[ListOp] = [
             list_op.__class__([list_op[idx] for idx in group], abelian=True)
             for group in groups.values()

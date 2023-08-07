@@ -41,11 +41,12 @@ from psfam.pauli_organizer import PauliOrganizer
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 stream_handler = logging.StreamHandler()
-log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 formatter = logging.Formatter(log_format)
 stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
-    
+
+
 def determine_origin(pauli_zs, pauli_xs):
     for zspec, xspec in zip(pauli_zs, pauli_xs):
         if (zspec == False).all() and (xspec == False).all():
@@ -53,11 +54,12 @@ def determine_origin(pauli_zs, pauli_xs):
         return zspec, xspec
     return zspec, xspec
 
+
 def apply_signs(pauli_zs, pauli_xs, strings, signs):
-    to_mult = [1]*len(pauli_zs)
+    to_mult = [1] * len(pauli_zs)
     d = {st: si for (st, si) in zip(strings, signs)}
     logger.debug(f"{d = }")
-    d['I'*len(pauli_zs[0])] = 1  # Include the identity in our dictionary.
+    d["I" * len(pauli_zs[0])] = 1  # Include the identity in our dictionary.
     _i = 0
     for zspec, xspec in zip(pauli_zs, pauli_xs):
         _P = Pauli((zspec, xspec))
@@ -122,7 +124,9 @@ class DensePauliBasisChange(ConverterBase):
         else:
             self._destination = None  # type: Optional[PauliOp]
         self._traverse = traverse
-        self._replacement_fn = replacement_fn or PauliBasisChange.operator_replacement_fn
+        self._replacement_fn = (
+            replacement_fn or PauliBasisChange.operator_replacement_fn
+        )
 
     @property
     def destination(self) -> Optional[PauliOp]:
@@ -180,8 +184,9 @@ class DensePauliBasisChange(ConverterBase):
             logger.debug(f"{primitive.paulis.z = }")
             # Modify logic here. We just need one element of the family
             # to determine which rotation to apply.
-            origin_z, origin_x = determine_origin(primitive.paulis.z, 
-                                                  primitive.paulis.x)
+            origin_z, origin_x = determine_origin(
+                primitive.paulis.z, primitive.paulis.x
+            )
             # Note make sure you can't draw 'II' here:
             logger.debug(f"origin_x: {origin_x}")
             logger.debug(f"origin_z: {origin_z}")
@@ -194,8 +199,9 @@ class DensePauliBasisChange(ConverterBase):
             logger.debug(f"_signs_ {signs}")
             strings = fams[_id].to_string()
             logger.debug(f"_strings_ {strings}")
-            to_mult = apply_signs(primitive.paulis.z, primitive.paulis.x, 
-                                  strings, signs)
+            to_mult = apply_signs(
+                primitive.paulis.z, primitive.paulis.x, strings, signs
+            )
             logger.debug(f"{to_mult = }")
             logger.debug(f"origin_pauli: {origin_pauli}")
             cob_instr_op, _ = self.get_new_cob_circuit(origin_pauli)
@@ -203,7 +209,7 @@ class DensePauliBasisChange(ConverterBase):
             logger.debug(f"type(cob_instr_op): {type(cob_instr_op)}")
             # We simply don't modify this in our scheme,
             # Unless we have the X family.. then we need to..
-            #primitive.paulis.z = np.logical_or(primitive.paulis.x, primitive.paulis.z)
+            # primitive.paulis.z = np.logical_or(primitive.paulis.x, primitive.paulis.z)
             if (primitive.paulis.z == False).all():
                 primitive.paulis.z = primitive.paulis.x
             primitive.paulis.x = False
@@ -213,10 +219,12 @@ class DensePauliBasisChange(ConverterBase):
             primitive.paulis.phase = 0
             logger.debug(f"{primitive.paulis.z = }")
             logger.debug(primitive)
-            #primitive.coeffs[0]*=-1
+            # primitive.coeffs[0]*=-1
             for _i in range(len(primitive.coeffs)):
                 primitive.coeffs[_i] *= to_mult[_i]
-            dest_pauli_sum_op = PauliSumOp(primitive, coeff=operator.coeff, grouping_type="TPB")
+            dest_pauli_sum_op = PauliSumOp(
+                primitive, coeff=operator.coeff, grouping_type="TPB"
+            )
             logger.debug(f"dest_pauli_sum_op {dest_pauli_sum_op}")
             return self._replacement_fn(cob_instr_op, dest_pauli_sum_op)
 
@@ -236,7 +244,9 @@ class DensePauliBasisChange(ConverterBase):
             listop_of_statefns = SummedOp(oplist=sf_list, coeff=operator.coeff)
             return listop_of_statefns.traverse(self.convert)
 
-        if isinstance(operator, OperatorStateFn) and isinstance(operator.primitive, PauliSumOp):
+        if isinstance(operator, OperatorStateFn) and isinstance(
+            operator.primitive, PauliSumOp
+        ):
             operator = OperatorStateFn(
                 operator.primitive.to_pauli_op(),
                 coeff=operator.coeff,
@@ -253,14 +263,17 @@ class DensePauliBasisChange(ConverterBase):
             # If the StateFn/Meas only contains a Pauli, use it directly.
             if isinstance(operator.primitive, PauliOp):
                 cob_instr_op, dest_pauli_op = self.get_cob_circuit(operator.primitive)
-                return self._replacement_fn(cob_instr_op, dest_pauli_op * operator.coeff)
+                return self._replacement_fn(
+                    cob_instr_op, dest_pauli_op * operator.coeff
+                )
             # TODO make a canonical "distribute" or graph swap as method in ListOp?
             elif operator.primitive.distributive:
                 if operator.primitive.abelian:
                     origin_pauli = self.get_tpb_pauli(operator.primitive)
                     cob_instr_op, _ = self.get_cob_circuit(origin_pauli)
                     diag_ops: List[OperatorBase] = [
-                        self.get_diagonal_pauli_op(op) for op in operator.primitive.oplist
+                        self.get_diagonal_pauli_op(op)
+                        for op in operator.primitive.oplist
                     ]
                     dest_pauli_op = operator.primitive.__class__(
                         diag_ops, coeff=operator.coeff, abelian=True
@@ -290,7 +303,9 @@ class DensePauliBasisChange(ConverterBase):
                 cob_instr_op, _ = self.get_cob_circuit(origin_pauli)
                 oplist = cast(List[PauliOp], operator.oplist)
                 diag_ops = [self.get_diagonal_pauli_op(op) for op in oplist]
-                dest_list_op = operator.__class__(diag_ops, coeff=operator.coeff, abelian=True)
+                dest_list_op = operator.__class__(
+                    diag_ops, coeff=operator.coeff, abelian=True
+                )
                 return self._replacement_fn(cob_instr_op, dest_list_op)
             else:
                 return operator.traverse(self.convert)
@@ -410,7 +425,8 @@ class DensePauliBasisChange(ConverterBase):
             pauli = pauli.primitive
 
         tensorall = cast(
-            Callable[[List[PrimitiveOp]], PrimitiveOp], partial(reduce, lambda x, y: x.tensor(y))
+            Callable[[List[PrimitiveOp]], PrimitiveOp],
+            partial(reduce, lambda x, y: x.tensor(y)),
         )
 
         y_to_x_origin = tensorall(
@@ -424,7 +440,8 @@ class DensePauliBasisChange(ConverterBase):
             pauli = pauli.primitive
 
         tensorall = cast(
-            Callable[[List[PrimitiveOp]], PrimitiveOp], partial(reduce, lambda x, y: x.tensor(y))
+            Callable[[List[PrimitiveOp]], PrimitiveOp],
+            partial(reduce, lambda x, y: x.tensor(y)),
         )
 
         y_to_x_origin = tensorall(
@@ -471,9 +488,13 @@ class DensePauliBasisChange(ConverterBase):
                 )
             )
 
-        return PauliOp(pauli_1, coeff=pauli_op1.coeff), PauliOp(pauli_2, coeff=pauli_op2.coeff)
+        return PauliOp(pauli_1, coeff=pauli_op1.coeff), PauliOp(
+            pauli_2, coeff=pauli_op2.coeff
+        )
 
-    def construct_cnot_chain(self, diag_pauli_op1: PauliOp, diag_pauli_op2: PauliOp) -> PrimitiveOp:
+    def construct_cnot_chain(
+        self, diag_pauli_op1: PauliOp, diag_pauli_op2: PauliOp
+    ) -> PrimitiveOp:
         r"""
         Construct a ``CircuitOp`` (or ``PauliOp`` if equal to the identity) which takes the
         eigenvectors of ``diag_pauli_op1`` to the eigenvectors of ``diag_pauli_op2``,
@@ -495,10 +516,14 @@ class DensePauliBasisChange(ConverterBase):
         # TODO be smarter in general
 
         pauli_1 = (
-            diag_pauli_op1.primitive if isinstance(diag_pauli_op1, PauliOp) else diag_pauli_op1
+            diag_pauli_op1.primitive
+            if isinstance(diag_pauli_op1, PauliOp)
+            else diag_pauli_op1
         )
         pauli_2 = (
-            diag_pauli_op2.primitive if isinstance(diag_pauli_op2, PauliOp) else diag_pauli_op2
+            diag_pauli_op2.primitive
+            if isinstance(diag_pauli_op2, PauliOp)
+            else diag_pauli_op2
         )
         origin_sig_bits = np.logical_or(pauli_1.z, pauli_1.x)
         destination_sig_bits = np.logical_or(pauli_2.z, pauli_2.x)
@@ -516,7 +541,8 @@ class DensePauliBasisChange(ConverterBase):
             np.logical_and(non_equal_sig_bits, origin_sig_bits), np.arange(num_qubits)
         )
         sig_in_dest_only_indices = np.extract(
-            np.logical_and(non_equal_sig_bits, destination_sig_bits), np.arange(num_qubits)
+            np.logical_and(non_equal_sig_bits, destination_sig_bits),
+            np.arange(num_qubits),
         )
 
         if len(sig_in_origin_only_indices) > 0 and len(sig_in_dest_only_indices) > 0:
@@ -524,7 +550,9 @@ class DensePauliBasisChange(ConverterBase):
             dest_anchor_bit = min(sig_in_dest_only_indices)
         else:
             # Set to lowest equal bit
-            origin_anchor_bit = min(np.extract(sig_equal_sig_bits, np.arange(num_qubits)))
+            origin_anchor_bit = min(
+                np.extract(sig_equal_sig_bits, np.arange(num_qubits))
+            )
             dest_anchor_bit = origin_anchor_bit
 
         cnots = QuantumCircuit(num_qubits)
@@ -548,7 +576,9 @@ class DensePauliBasisChange(ConverterBase):
 
         return PrimitiveOp(cnots)
 
-    def get_cob_circuit(self, origin: Union[Pauli, PauliOp]) -> Tuple[PrimitiveOp, PauliOp]:
+    def get_cob_circuit(
+        self, origin: Union[Pauli, PauliOp]
+    ) -> Tuple[PrimitiveOp, PauliOp]:
         r"""
         Construct an Operator which maps the +1 and -1 eigenvectors
         of the origin Pauli to the +1 and -1 eigenvectors of the destination Pauli. It does so by
@@ -608,7 +638,9 @@ class DensePauliBasisChange(ConverterBase):
         origin, destination = self.pad_paulis_to_equal_length(origin, destination)
 
         origin_sig_bits = np.logical_or(origin.primitive.x, origin.primitive.z)
-        destination_sig_bits = np.logical_or(destination.primitive.x, destination.primitive.z)
+        destination_sig_bits = np.logical_or(
+            destination.primitive.x, destination.primitive.z
+        )
         if not any(origin_sig_bits) or not any(destination_sig_bits):
             if not (any(origin_sig_bits) or any(destination_sig_bits)):
                 # Both all Identity, just return Identities
@@ -621,15 +653,21 @@ class DensePauliBasisChange(ConverterBase):
         cob_instruction = self.get_diagonalizing_clifford(origin)
 
         # Construct CNOT chain, assuming full connectivity... - Steps 3)-5)
-        cob_instruction = self.construct_cnot_chain(origin, destination).compose(cob_instruction)
+        cob_instruction = self.construct_cnot_chain(origin, destination).compose(
+            cob_instruction
+        )
 
         # Step 6 and 7
-        dest_diagonlizing_clifford = self.get_diagonalizing_clifford(destination).adjoint()
+        dest_diagonlizing_clifford = self.get_diagonalizing_clifford(
+            destination
+        ).adjoint()
         cob_instruction = dest_diagonlizing_clifford.compose(cob_instruction)
 
         return cast(PrimitiveOp, cob_instruction), destination
 
-    def get_new_cob_circuit(self, origin: Union[Pauli, PauliOp]) -> Tuple[PrimitiveOp, PauliOp]:
+    def get_new_cob_circuit(
+        self, origin: Union[Pauli, PauliOp]
+    ) -> Tuple[PrimitiveOp, PauliOp]:
         r"""
         Construct an Operator which maps the +1 and -1 eigenvectors
         of the origin Pauli to the +1 and -1 eigenvectors of the destination Pauli. It does so by
@@ -690,9 +728,10 @@ class DensePauliBasisChange(ConverterBase):
         logger.debug(f"{origin = }")
         logger.debug(f"{destination = }")
 
-
         origin_sig_bits = np.logical_or(origin.primitive.x, origin.primitive.z)
-        destination_sig_bits = np.logical_or(destination.primitive.x, destination.primitive.z)
+        destination_sig_bits = np.logical_or(
+            destination.primitive.x, destination.primitive.z
+        )
         if not any(origin_sig_bits) or not any(destination_sig_bits):
             if not (any(origin_sig_bits) or any(destination_sig_bits)):
                 # Both all Identity, just return Identities
@@ -701,7 +740,7 @@ class DensePauliBasisChange(ConverterBase):
                 # One is Identity, one is not
                 raise ValueError("Cannot change to or from a fully Identity Pauli.")
 
-        '''
+        """
         # Steps 1 and 2
         cob_instruction = self.get_diagonalizing_clifford(origin)
 
@@ -711,7 +750,7 @@ class DensePauliBasisChange(ConverterBase):
         # Step 6 and 7
         dest_diagonlizing_clifford = self.get_diagonalizing_clifford(destination).adjoint()
         cob_instruction = dest_diagonlizing_clifford.compose(cob_instruction)
-        '''
+        """
 
         logger.debug(f"ORIGIN: {str(origin)}")
         m = len(str(origin))

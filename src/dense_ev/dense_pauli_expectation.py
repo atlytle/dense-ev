@@ -18,10 +18,10 @@ from typing import Union
 
 import numpy as np
 
-#from qiskit.opflow.converters.new_abelian_grouper import NewAbelianGrouper
-#from qiskit.opflow.converters.abelian_grouper import AbelianGrouper
-#from qiskit.opflow.converters.pauli_basis_change import PauliBasisChange
-#from qiskit.opflow.converters.new_pauli_basis_change import PauliBasisChange
+# from qiskit.opflow.converters.new_abelian_grouper import NewAbelianGrouper
+# from qiskit.opflow.converters.abelian_grouper import AbelianGrouper
+# from qiskit.opflow.converters.pauli_basis_change import PauliBasisChange
+# from qiskit.opflow.converters.new_pauli_basis_change import PauliBasisChange
 from qiskit.opflow.expectations.expectation_base import ExpectationBase
 from qiskit.opflow.list_ops.composed_op import ComposedOp
 from qiskit.opflow.list_ops.list_op import ListOp
@@ -34,7 +34,7 @@ from qiskit.opflow.state_fns.state_fn import StateFn
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 stream_handler = logging.StreamHandler()
-log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 formatter = logging.Formatter(log_format)
 stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
@@ -42,6 +42,7 @@ logger.addHandler(stream_handler)
 import sys, os
 from dense_ev.dense_grouper import DenseGrouper
 from dense_ev.dense_pauli_basis_change import DensePauliBasisChange
+
 
 class DensePauliExpectation(ExpectationBase):
     r"""
@@ -92,7 +93,9 @@ class DensePauliExpectation(ExpectationBase):
                 # Setting massive=False because this conversion is implicit. User can perform this
                 # action on the Observable with massive=True explicitly if they so choose.
                 pauli_obsv = operator.primitive.to_pauli_op(massive=False)
-                operator = StateFn(pauli_obsv, is_measurement=True, coeff=operator.coeff)
+                operator = StateFn(
+                    pauli_obsv, is_measurement=True, coeff=operator.coeff
+                )
 
             if self._grouper and isinstance(operator.primitive, (ListOp, PauliSumOp)):
                 logger.debug(f"grouper, isinstance {operator.primitive}")
@@ -102,9 +105,11 @@ class DensePauliExpectation(ExpectationBase):
 
             # Convert the measurement into diagonal basis (PauliBasisChange chooses
             # this basis by default).
-            logger.debug('cob')
+            logger.debug("cob")
             logger.debug(operator)
-            cob = DensePauliBasisChange(replacement_fn=DensePauliBasisChange.measurement_replacement_fn)
+            cob = DensePauliBasisChange(
+                replacement_fn=DensePauliBasisChange.measurement_replacement_fn
+            )
             logger.info(f"cob._destination: {cob._destination}")
             logger.info(f"cob: {cob}")
             return cob.convert(operator).reduce()
