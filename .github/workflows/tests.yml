@@ -17,7 +17,10 @@ jobs:
         pip install tox
         #curl https://raw.githubusercontent.com/qiskit-community/ecosystem/main/ecosystem/templates/.pylintrc > .pylintrc
     - name: Run styles check
-      run: tox -elint
+      run: |
+        pushd src
+        tox -elint
+        popd
   json-lint:
     runs-on: ubuntu-latest
     steps:
@@ -27,7 +30,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install tox
     - name: Validate ecosystem.json
-      run: tox -ejson
+      run: |
+        pushd src
+        tox -ejson
+        popd
   tests:
     runs-on: ubuntu-latest
     strategy:
@@ -53,7 +59,9 @@ jobs:
         pip install -r requirements-dev.txt
     - name: Test using tox envs
       run: |
+        pushd src
         tox ${{ env.TOX_ENV }}
+        popd
   coverage:
     runs-on: ubuntu-latest
     steps:
@@ -70,7 +78,9 @@ jobs:
         curl https://raw.githubusercontent.com/qiskit-community/ecosystem/main/ecosystem/templates/.coveragerc > .coveragerc
     - name: Run coverage
       run: |
+        pushd src
         tox -ecoverage
+        popd
   black:
     runs-on: ubuntu-latest
     steps:
@@ -85,4 +95,7 @@ jobs:
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
     - name: Run black
-      run: tox -eblack
+      run: |
+        pushd src
+        tox -eblack
+        popd
