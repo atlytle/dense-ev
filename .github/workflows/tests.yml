@@ -78,9 +78,7 @@ jobs:
         curl https://raw.githubusercontent.com/qiskit-community/ecosystem/main/ecosystem/templates/.coveragerc > .coveragerc
     - name: Run coverage
       run: |
-        pushd src
         tox -ecoverage
-        popd
   black:
     runs-on: ubuntu-latest
     steps:
@@ -96,6 +94,4 @@ jobs:
         pip install -r requirements-dev.txt
     - name: Run black
       run: |
-        pushd src
         tox -eblack
-        popd
