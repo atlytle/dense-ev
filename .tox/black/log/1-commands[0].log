@@ -1,0 +1,26 @@
+name: black
+run_id: commands[0]
+env HOME: /home/atlytle
+env LANG: en_US.UTF-8
+env TERM: xterm-256color
+env PATH: /home/atlytle/dense-ev/.tox/lint/bin:/home/atlytle/env/bin:/home/atlytle/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/atlytle/Dropbox/bin
+env PYTHONHASHSEED: 3516819283
+env PIP_DISABLE_PIP_VERSION_CHECK: 1
+env PYTHONIOENCODING: utf-8
+env VIRTUAL_ENV: .tox/lint
+env LANGUAGE: en_US
+env LC_ALL: en_US.utf-8
+env TOX_ENV_NAME: black
+env TOX_WORK_DIR: /home/atlytle/dense-ev/.tox
+env TOX_ENV_DIR: .tox/lint
+env COLUMNS: 89
+env LINES: 48
+metadata pid: 31727
+cwd: /home/atlytle/dense-ev
+allow: /home/atlytle/dense-ev/.tox/lint/bin/*
+cmd: black src tests --check
+exit_code: 0
+
+standard error:
+[1mAll done! ✨ 🍰 ✨[0m
+[34m11 files [0mwould be left unchanged.

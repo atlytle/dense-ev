@@ -1,4 +1,0 @@
-pytest==6.2.4
-qiskit
-qiskit-aer
-psfam
