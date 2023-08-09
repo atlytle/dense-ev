@@ -92,10 +92,10 @@ def unit_test(m):
     return np.isclose(new_eval, direct_eval.real)
 
 
-def run_unit_tests():
+def run_unit_tests(mmax=4, tmax=11):
     results = []
-    for m in range(1, 4):
-        for test in range(1, 11):
+    for m in range(1, mmax):
+        for test in range(1, tmax):
             print(f"{m = } , {test = }")
             passed = unit_test(m)
             results.append(passed)
@@ -110,6 +110,7 @@ def run_unit_tests():
         f"Performed {len(results)} tests, "
         f"all tests passed = {np.array(results).all()==True}"
     )
+    return np.array(results).all()
 
 
 if __name__ == "__main__":
