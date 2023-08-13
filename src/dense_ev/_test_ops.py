@@ -16,7 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import itertools
 import logging
+from random import random
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -33,6 +35,8 @@ from qiskit.opflow import StateFn, DictStateFn, PauliExpectation, CircuitSampler
 from qiskit.quantum_info import random_statevector
 from qiskit.utils import QuantumInstance
 
+from decompose_pauli import pauli_ops
+from dense_ev import rmatrix
 from dense_ev.rmatrix import random_H, get_Op
 from dense_ev.dense_pauli_expectation import DensePauliExpectation
 
@@ -92,6 +96,23 @@ def unit_test(m):
     return np.isclose(new_eval, direct_eval.real)
 
 
+def check_EV(H):
+    m = H.num_qubits
+    sf = StateFn(H)
+    sf = sf.adjoint()
+    state = DictStateFn(random_statevector(2**m).to_dict())
+    direct_eval = sf.eval(state)
+
+    expectation = DensePauliExpectation(group_paulis=True).convert(sf.compose(state))
+    backend = Aer.get_backend("statevector_simulator")
+    qi = QuantumInstance(backend)
+    sampler = CircuitSampler(qi, attach_results=True).convert(expectation)
+    new_eval = sampler.eval()
+    print(f"{direct_eval = }")
+    print(f"{new_eval = }")
+    return np.isclose(new_eval, direct_eval.real)
+
+
 def run_unit_tests(mmax=4, tmax=11):
     results = []
     for m in range(1, mmax):
@@ -113,5 +134,45 @@ def run_unit_tests(mmax=4, tmax=11):
     return np.array(results).all()
 
 
+def rtest(m):
+    from qiskit.opflow.primitive_ops import PauliOp
+    from qiskit.quantum_info.operators import Pauli
+
+    # N = 2**m
+    # Hmat = random_H(N)
+    H_op = PauliOp(Pauli("I" * m), 0)
+    print(H_op)
+    print(H_op.primitive)
+    for pauli_string in itertools.product(pauli_ops.keys(), repeat=m):
+        pauli_string = "".join(pauli_string)
+        # Test random sets of strings.
+        if random() > 0.5:
+            H_op += PauliOp(Pauli(pauli_string), random())
+        else:
+            # Test zero coefficients.
+            if random() > 0.5:
+                H_op += PauliOp(Pauli(pauli_string), 0)
+            # Test missing strings.
+            else:
+                continue
+
+    # for pauli_string in itertools.product(pauli_ops.keys(), repeat=m):
+    #     pauli_string = "".join(pauli_string)
+    #     # Test random sets of strings.
+    #     if random() > 0.5:
+    #         H_op += PauliOp(Pauli(pauli_string), random())
+    #     #else:
+    #         # Test zero coefficients.
+    #         #if random() > 0.0:
+    #         #    H_op += PauliOp(Pauli(pauli_string), 0)
+    #         # Test missing strings.
+    #         #else:
+    #             #continue
+    # H_op = H_op.reduce()
+    print(H_op.primitive)
+    return check_EV(H_op)
+
+
 if __name__ == "__main__":
-    run_unit_tests()
+    # run_unit_tests()
+    print(rtest(2))
