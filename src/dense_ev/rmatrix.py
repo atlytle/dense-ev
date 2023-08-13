@@ -196,8 +196,13 @@ def get_groups2(H, m):
     """
     # Will primitive.paulis include the full set irrespective of H?
     id_list = [str(x) for x in primitive.paulis]
-    id_dict = {id_list[x]: x for x in range(len(id_list))}
-    # print('id_dict:', id_dict)
+    
+    ## all the Pauli operators with a coefficient equal to zero in the decomposition are converted into the identity,
+    ## so, we have to save the pointer to the "true" coefficient associated to the identity (otherwise, it will be zero)
+    identity_string = id_list[0]
+    id_dict = { id_list[x]: x for x in range(len(id_list))}
+    id_dict[identity_string] = 0
+    #print('id_dict:', id_dict)
 
     res = []
     for family in PO.f:
