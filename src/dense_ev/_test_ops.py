@@ -35,8 +35,7 @@ from qiskit.opflow import StateFn, DictStateFn, PauliExpectation, CircuitSampler
 from qiskit.quantum_info import random_statevector
 from qiskit.utils import QuantumInstance
 
-from decompose_pauli import pauli_ops
-from dense_ev import rmatrix
+from dense_ev.decompose_pauli import pauli_ops
 from dense_ev.rmatrix import random_H, get_Op
 from dense_ev.dense_pauli_expectation import DensePauliExpectation
 
