@@ -32,7 +32,9 @@ import numpy as np
 
 from qiskit import Aer
 from qiskit.opflow import StateFn, DictStateFn, PauliExpectation, CircuitSampler
+from qiskit.opflow.primitive_ops import PauliOp
 from qiskit.quantum_info import random_statevector
+from qiskit.quantum_info.operators import Pauli
 from qiskit.utils import QuantumInstance
 
 from dense_ev.decompose_pauli import pauli_ops
@@ -134,11 +136,6 @@ def run_unit_tests(mmax=4, tmax=11):
 
 
 def rtest(m):
-    from qiskit.opflow.primitive_ops import PauliOp
-    from qiskit.quantum_info.operators import Pauli
-
-    # N = 2**m
-    # Hmat = random_H(N)
     H_op = PauliOp(Pauli("I" * m), 0)
     print(H_op)
     print(H_op.primitive)
@@ -154,7 +151,7 @@ def rtest(m):
             # Test missing strings.
             else:
                 continue
-
+    # Check duplicated strings.
     # for pauli_string in itertools.product(pauli_ops.keys(), repeat=m):
     #     pauli_string = "".join(pauli_string)
     #     # Test random sets of strings.
@@ -172,6 +169,27 @@ def rtest(m):
     return check_EV(H_op)
 
 
+def run_rtests(mmax=3, tmax=11):
+    results = []
+    for m in range(1, mmax):
+        for test in range(1, tmax):
+            print(f"{m = } , {test = }")
+            passed = rtest(m)
+            results.append(passed)
+            if passed:
+                continue
+            else:
+                print(f"Test failed with {m = }")
+                break
+        if not passed:
+            break
+    print(
+        f"Performed {len(results)} tests, "
+        f"all tests passed = {np.array(results).all()==True}"
+    )
+    return np.array(results).all()
+
+
 if __name__ == "__main__":
     # run_unit_tests()
-    print(rtest(2))
+    run_rtests()
