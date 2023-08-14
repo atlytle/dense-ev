@@ -75,9 +75,11 @@ def test_random_H(m):
     H = dot_all([U, D, hc(U)])
     vals, vecs = eig(H)
 
-    print(evs)
-    print(D)
-    print(vals)
+    # Sort eigenvalues.
+    evs = np.sort(evs)
+    vals = np.sort(vals)
+
+    return np.isclose(evs, vals).all()
 
 
 def array_to_Op(Hmat):
@@ -268,6 +270,7 @@ def get_Op(Hmat, optype):
 
 if __name__ == "__main__":
     # print(get_groups(2))
-    Hmat = random_H(8)
+    # Hmat = random_H(8)
     # print(array_to_SummedOp(Hmat))
-    print(get_Op(Hmat, "abelian"))
+    # print(get_Op(Hmat, "abelian"))
+    print(test_random_H(3))

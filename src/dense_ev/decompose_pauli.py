@@ -19,8 +19,6 @@ import numpy as np
 import scipy.sparse as sp
 import itertools, functools
 
-# from e1plus import get_eigenvalues
-
 op_I = sp.eye(2)
 op_Z = sp.dia_matrix([[1, 0], [0, -1]])
 op_X = sp.dia_matrix([[0, 1], [1, 0]])
@@ -119,35 +117,35 @@ def from_pauli_vec(pauli_vec):
     return result
 
 
-def to_C_vec(mat):
-    C_vec = {}  # the dictionary we are saving
-
-    mat_vec = np.array(mat).ravel()
-    num_qubits = int(np.log2(np.sqrt(mat_vec.size)))
-
-    for C_string in itertools.product(C_ops.keys(), repeat=num_qubits):
-        # construct this pauli string as a matrix
-        ops = [C_ops[tag] for tag in C_string]
-        op = functools.reduce(sp_kron_dok, ops)
-
-        # compute an inner product, same as tr(A @ B) but faster
-        op_vec = op.reshape((1, 4**num_qubits))
-        coefficient = (op_vec * mat_vec).sum() / 2**num_qubits
-        if coefficient != 0:
-            C_vec["".join(C_string)] = coefficient
-
-    return C_vec
+# def to_C_vec(mat):
+#     C_vec = {}  # the dictionary we are saving
+#
+#     mat_vec = np.array(mat).ravel()
+#     num_qubits = int(np.log2(np.sqrt(mat_vec.size)))
+#
+#     for C_string in itertools.product(C_ops.keys(), repeat=num_qubits):
+#         # construct this pauli string as a matrix
+#         ops = [C_ops[tag] for tag in C_string]
+#         op = functools.reduce(sp_kron_dok, ops)
+#
+#         # compute an inner product, same as tr(A @ B) but faster
+#         op_vec = op.reshape((1, 4**num_qubits))
+#         coefficient = (op_vec * mat_vec).sum() / 2**num_qubits
+#         if coefficient != 0:
+#             C_vec["".join(C_string)] = coefficient
+#
+#     return C_vec
 
 
 def test():
     mat = [[1, 0, 0, 0], [0, 0, 0, 1], [0, 1, 0, 0], [0, 1, 0, 0]]  # for example...
-    print(to_pauli_vec(mat))
-    print(sp_kron_dok(mat, mat))
+    # print(to_pauli_vec(mat))
+    # print(sp_kron_dok(mat, mat))
 
     # for ps in pauli_strings(1):
     #    print(ps)
 
-    print()
+    """
     # pauli_vec = {'XY': 1.0, 'ZZ': 1.0}
     pauli_vec = {"Y": 1.0}
     matrix = from_pauli_vec(pauli_vec)
@@ -156,7 +154,12 @@ def test():
 
     print(pauli_string_to_mat("Y"))
     print(op_Y.toarray())
+    """
+
+    vec = to_pauli_vec(mat)
+    _mat = from_pauli_vec(vec)
+    return np.isclose(_mat, mat).all()
 
 
 if __name__ == "__main__":
-    test()
+    print(test())

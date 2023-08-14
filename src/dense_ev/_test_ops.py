@@ -17,16 +17,17 @@
 # limitations under the License.
 
 import itertools
-import logging
+
+# import logging
 from random import random
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-stream_handler = logging.StreamHandler()
-log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-formatter = logging.Formatter(log_format)
-stream_handler.setFormatter(formatter)
-logger.addHandler(stream_handler)
+# logger = logging.getLogger(__name__)
+# logger.setLevel(logging.INFO)
+# stream_handler = logging.StreamHandler()
+# log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+# formatter = logging.Formatter(log_format)
+# stream_handler.setFormatter(formatter)
+# logger.addHandler(stream_handler)
 
 import numpy as np
 
@@ -42,40 +43,40 @@ from dense_ev.rmatrix import random_H, get_Op
 from dense_ev.dense_pauli_expectation import DensePauliExpectation
 
 
-def main(m, optype, name, nshots):
-    seed = 42
-    np.random.seed(seed)
-    N = 2**m
-    Hmat = random_H(N)
+# def main(m, optype, name, nshots):
+#     seed = 42
+#     np.random.seed(seed)
+#     N = 2**m
+#     Hmat = random_H(N)
 
-    logger.debug(Hmat)
+#     logger.debug(Hmat)
 
-    H = get_Op(Hmat, "naive")
+#     H = get_Op(Hmat, "naive")
 
-    sf = StateFn(H)
-    sf = sf.adjoint()
+#     sf = StateFn(H)
+#     sf = sf.adjoint()
 
-    state = DictStateFn(random_statevector(2**m).to_dict())
-    _eval = sf.eval(state)
-    logger.info(f"Direct evaluation: {_eval}")
+#     state = DictStateFn(random_statevector(2**m).to_dict())
+#     _eval = sf.eval(state)
+#     logger.info(f"Direct evaluation: {_eval}")
 
-    logger.debug("Building PauliExpectation")
-    if optype == "naive":
-        expectation = PauliExpectation(group_paulis=False).convert(sf.compose(state))
-    if optype == "abelian":
-        expectation = PauliExpectation(group_paulis=True).convert(sf.compose(state))
-    if optype == "dense":
-        expectation = DensePauliExpectation(group_paulis=True).convert(
-            sf.compose(state)
-        )
+#     logger.debug("Building PauliExpectation")
+#     if optype == "naive":
+#         expectation = PauliExpectation(group_paulis=False).convert(sf.compose(state))
+#     if optype == "abelian":
+#         expectation = PauliExpectation(group_paulis=True).convert(sf.compose(state))
+#     if optype == "dense":
+#         expectation = DensePauliExpectation(group_paulis=True).convert(
+#             sf.compose(state)
+#         )
 
-    logger.debug(f"Using backend {name}")
-    backend = get_backend(name)
-    qi = QuantumInstance(backend, shots=nshots, optimization_level=3)
-    sampler = CircuitSampler(qi, attach_results=True).convert(expectation)
+#     logger.debug(f"Using backend {name}")
+#     backend = get_backend(name)
+#     qi = QuantumInstance(backend, shots=nshots, optimization_level=3)
+#     sampler = CircuitSampler(qi, attach_results=True).convert(expectation)
 
-    logger.info(f"Direct evaluation: {_eval}")
-    logger.info("RESULT:", sampler.eval())
+#     logger.info(f"Direct evaluation: {_eval}")
+#     logger.info("RESULT:", sampler.eval())
 
 
 def unit_test(m):
