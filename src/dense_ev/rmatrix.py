@@ -67,7 +67,7 @@ def random_H(N):
     return H
 
 
-def test_random_H(m):
+def check_random_H(m):
     N = pow(2, m)
     evs = random_evals(N)
     D = np.diag(evs)
