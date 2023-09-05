@@ -22,7 +22,7 @@ pip install git+ssh://git@github.com/atlytle/dense-ev.git
 ```
 To run unit tests,
 ```python
-from dense_ev.test_ops import run_unit_tests
+from dense_ev._test_ops import run_unit_tests
 
 run_unit_tests()
 ```
@@ -39,7 +39,7 @@ by the `PauliExpectation` class. `DensePauliExpectation` extends the functionali
 to dense optimal grouping, and may be used as a replacement for
 `PauliExpectation`:
 ```python
-from dense_EV import DensePauliExpectation
+from dense_ev.dense_pauli_expectation import DensePauliExpectation
 
 # Simple expectation values:
 ...
