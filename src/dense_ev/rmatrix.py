@@ -25,6 +25,7 @@ from numpy.random import normal
 from scipy.stats import unitary_group
 
 from qiskit.opflow.primitive_ops import PauliOp
+from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators import Pauli
 from qiskit.opflow.list_ops.summed_op import SummedOp
 from qiskit.opflow.primitive_ops.pauli_sum_op import PauliSumOp
@@ -103,6 +104,21 @@ def array_to_Op(Hmat):
     # print(type(H_op))
     return H_op
 
+def array_to_SparsePauliOp(Hmat, cut=0):
+    N = Hmat.shape[0]
+    m = log(N, 2)
+    assert m == int(m)
+    m = int(m)
+
+    pauli_vec = to_pauli_vec(Hmat)
+
+    primitives = []
+    coeffs = []
+    for pauli_string, coeff in pauli_vec.items():
+        if abs(coeff) > cut:
+            primitives.append(pauli_string)
+            coeffs.append(coeff)
+    return SparsePauliOp(primitives, coeffs=coeffs)
 
 def get_groups(m):
     """Specification of Pauli string families suitable for use in Qiskit.
