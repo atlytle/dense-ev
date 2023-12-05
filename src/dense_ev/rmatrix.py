@@ -104,6 +104,7 @@ def array_to_Op(Hmat):
     # print(type(H_op))
     return H_op
 
+
 def array_to_SparsePauliOp(Hmat, cut=0):
     N = Hmat.shape[0]
     m = log(N, 2)
@@ -119,6 +120,7 @@ def array_to_SparsePauliOp(Hmat, cut=0):
             primitives.append(pauli_string)
             coeffs.append(coeff)
     return SparsePauliOp(primitives, coeffs=coeffs)
+
 
 def get_groups(m):
     """Specification of Pauli string families suitable for use in Qiskit.
