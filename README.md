@@ -31,8 +31,8 @@ run_unit_tests()
 Note that **dense_ev** specifies `qiskit < 0.43.0`, as the `Opflow` and
 `QuantumInstance` packages have been deprecated as of `Qiskit 0.43.0`.
 We plan to update the code to function with the new `primitives` as this 
-migration continues and more documentation becomes available.
-**Update** 2024-01-07: Support for dense Pauli grouping 
+migration continues and more documentation becomes available.   
+**Update 2024-01-07**: Support for dense Pauli grouping 
 in the Aer `Estimator` primitive merged to `main` branch. 
 See usage example below.
 
