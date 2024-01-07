@@ -32,6 +32,9 @@ Note that **dense_ev** specifies `qiskit < 0.43.0`, as the `Opflow` and
 `QuantumInstance` packages have been deprecated as of `Qiskit 0.43.0`.
 We plan to update the code to function with the new `primitives` as this 
 migration continues and more documentation becomes available.
+**Update** 2024-01-07: Support for dense Pauli grouping 
+in the Aer `Estimator` primitive merged to `main` branch. 
+See usage example below.
 
 ## Usage
 Functionality for naive and QWC groupings is provided in Qiskit
@@ -63,3 +66,25 @@ result = vqe.compute_minimum_eigenvalue(operator=H)
 
 ```
 
+### Estimator support
+The Aer implementation of `Estimator` is extended to incorporate
+dense Pauli grouping, and can be invoked using the keyword
+argument `abelian_grouping="DENSE"`. See `test_estimator.py`
+for a more complete listing comparing no and abelian grouping.
+```python
+from dense_ev.estimator_from_aer import Estimator
+
+...
+
+# Dense result.
+nshots = 200000
+approx = False
+grouping = "DENSE"
+run_options = {"shots": nshots, "seed": seed}
+estimator = Estimator(
+    run_options=run_options, abelian_grouping=grouping, approximation=approx)
+result_dense = estimator.run(state, H, shots=nshots).result().values
+
+...
+
+```
