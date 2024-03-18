@@ -7,7 +7,7 @@ authors = [
     {name = "Andrew Lytle", email="atlytle@illinois.edu"},
 ]
 dependencies = [
-    "qiskit",
+    "qiskit < 0.43.0",
     "psfam"
 ]
 license = {file = "LICENSE.txt"}
