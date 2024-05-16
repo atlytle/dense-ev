@@ -8,6 +8,7 @@ authors = [
 ]
 dependencies = [
     "qiskit < 0.43.0",
+    "qiskit_aer",
     "psfam"
 ]
 license = {file = "LICENSE.txt"}

@@ -31,7 +31,7 @@ from random import random
 
 import numpy as np
 
-from qiskit import Aer
+from qiskit_aer import Aer
 from qiskit.opflow import StateFn, DictStateFn, PauliExpectation, CircuitSampler
 from qiskit.opflow.primitive_ops import PauliOp
 from qiskit.quantum_info import random_statevector
