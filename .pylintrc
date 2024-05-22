@@ -497,7 +497,7 @@ no-docstring-rgx=^_
 property-classes=abc.abstractproperty
 
 # Naming style matching correct variable names.
-variable-naming-style=
+variable-naming-style=any
 
 # Regular expression matching correct variable names. Overrides variable-
 # naming-style.
