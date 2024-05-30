@@ -12,16 +12,16 @@ Create a virtual environment to sandbox the installation (optional):
 ```bash
 python3 -m venv test-env && source ./test-env/bin/activate
 ```
-To install,
+<!--To install,
 ```bash
-pip install dense-ev
+pip install dense-ev-->
 ```
 Install from GitHub:
 ```bash
 pip install git+ssh://git@github.com/atlytle/dense-ev.git
 ```
 A test function comparing results using abelian and dense grouping
-with exact results is available
+with exact results is available:
 ```python
 from dense_ev.test_estimator import test_random
 
@@ -42,7 +42,7 @@ to `qiskit` (v1.0). Added `qiskit_aer` requirement.
 The Aer implementation of `Estimator` is extended to incorporate
 dense Pauli grouping, and can be invoked using the keyword
 argument `abelian_grouping="DENSE"`. See `test_estimator.py`
-for a more complete listing comparing no and abelian grouping.
+for a more complete listing. <!--comparing no and abelian grouping.-->
 ```python
 from dense_ev.estimator_from_aer import Estimator
 
