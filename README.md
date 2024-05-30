@@ -20,52 +20,24 @@ Install from GitHub:
 ```bash
 pip install git+ssh://git@github.com/atlytle/dense-ev.git
 ```
-To run unit tests,
+A test function comparing results using abelian and dense grouping
+with exact results is available
 ```python
-from dense_ev._test_ops import run_unit_tests
+from dense_ev.test_estimator import test_random
 
-run_unit_tests()
+m = 3  # n_qubits
+run_unit_tests(m)
 ```
 
 ### Qiskit version compatibility
-Note that **dense_ev** specifies `qiskit < 0.43.0`, as the `Opflow` and
-`QuantumInstance` packages have been deprecated as of `Qiskit 0.43.0`.
-We plan to update the code to function with the new `primitives` as this 
-migration continues and more documentation becomes available.   
-**Update 2024-01-07**: Support for dense Pauli grouping 
+**2024-01-07**: Support for dense Pauli grouping 
 in the Aer `Estimator` primitive merged to `main` branch. 
-See usage example below.
+See usage example below.  
+**2024-05-30**: Functionality using `Opflow` and other deprecated classes
+has been removed. Package requirements changed from `qiskit < 0.43.0` 
+to `qiskit` (v1.0). Added `qiskit_aer` requirement.
 
 ## Usage
-Functionality for naive and QWC groupings is provided in Qiskit
-by the `PauliExpectation` class. `DensePauliExpectation` extends the functionality
-to dense optimal grouping, and may be used as a replacement for
-`PauliExpectation`:
-```python
-from dense_ev.dense_pauli_expectation import DensePauliExpectation
-
-# Simple expectation values:
-...
-
-ev_spec = StateFn(H).compose(psi)
-expectation = DensePauliExpectation().convert(ev_spec)
-
-...
-
-# VQE example
-...
-
-vqe = VQE(ansatz, optimizer=spsa, quantum_instance=qi,
-          callback=store_intermediate_result, 
-          expectation=DensePauliExpectation())
-
-result = vqe.compute_minimum_eigenvalue(operator=H)
-
-...
-
-
-```
-
 ### Estimator support
 The Aer implementation of `Estimator` is extended to incorporate
 dense Pauli grouping, and can be invoked using the keyword
