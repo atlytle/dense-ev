@@ -28,7 +28,8 @@ from warnings import warn
 import numpy as np
 from qiskit.circuit import ParameterExpression, QuantumCircuit
 from qiskit.compiler import transpile
-from qiskit.opflow import PauliSumOp
+
+# from qiskit.opflow import PauliSumOp
 from qiskit.primitives import BaseEstimator, EstimatorResult
 from qiskit.primitives.primitive_job import PrimitiveJob
 from qiskit.primitives.utils import _circuit_key, _observable_key, init_observable
@@ -104,9 +105,11 @@ class Estimator(BaseEstimator):
                 If approximation is True, this parameter is ignored and assumed to be False.
         """
         super().__init__(options=run_options)
-        # if abelian_grouping == "DENSE":
-        #    m = 3
-        #    self.PO = PauliOrganizer(m)
+        # These three private attributes used to be created by super, but were deprecated in Qiskit
+        # 0.46. See https://github.com/Qiskit/qiskit/pull/11051
+        self._circuits = []
+        self._parameters = []
+        self._observables = []
         backend_options = {} if backend_options is None else backend_options
         method = (
             "density_matrix"
@@ -148,7 +151,7 @@ class Estimator(BaseEstimator):
     def _run(
         self,
         circuits: Sequence[QuantumCircuit],
-        observables: Sequence[BaseOperator | PauliSumOp],
+        observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         **run_options,
     ) -> PrimitiveJob:
@@ -185,7 +188,10 @@ class Estimator(BaseEstimator):
             parameter_values,
             **run_options,
         )
-        job.submit()
+        # The public submit method was removed in Qiskit 0.46
+        (
+            job.submit if hasattr(job, "submit") else job._submit
+        )()  # pylint: disable=no-member
         return job
 
     def _compute(self, circuits, observables, parameter_values, run_options):
@@ -394,6 +400,8 @@ class Estimator(BaseEstimator):
         circs = []
         for meas_circuit in meas_circuits:
             new_circ = circuit.copy()
+            # print(f"{new_circ.num_qubits = }")
+            # print(f"{meas_circuit.num_qubits = }")
             for creg in meas_circuit.cregs:
                 new_circ.add_register(creg)
             new_circ.compose(meas_circuit, inplace=True)

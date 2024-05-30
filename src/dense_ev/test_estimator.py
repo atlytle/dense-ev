@@ -42,14 +42,15 @@ def test_random(m):
     result_exact = estimator.run(state, H, shots=nshots).result().values
 
     # Abelian result.
-    nshots = 200000
-    approx = False
-    grouping = True
-    run_options = {"shots": nshots, "seed": seed}
-    estimator = Estimator(
-        run_options=run_options, abelian_grouping=grouping, approximation=approx
-    )
-    result_abelian = estimator.run(state, H, shots=nshots).result().values
+    # nshots = 200000
+    # approx = False
+    # grouping = True
+    # run_options = {"shots": nshots, "seed": seed}
+    # estimator = Estimator(
+    #     run_options=run_options, abelian_grouping=grouping,
+    #     approximation=approx
+    # )
+    # result_abelian = estimator.run(state, H, shots=nshots).result().values
 
     # Dense result.
     nshots = 200000
@@ -62,7 +63,7 @@ def test_random(m):
     result_dense = estimator.run(state, H, shots=nshots).result().values
 
     print(f"{result_exact = }")
-    print(f"{result_abelian = }")
+    # print(f"{result_abelian = }")
     print(f"{result_dense = }")
 
 

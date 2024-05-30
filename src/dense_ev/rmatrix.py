@@ -24,12 +24,13 @@ from numpy.linalg import eig
 from numpy.random import normal
 from scipy.stats import unitary_group
 
-from qiskit.opflow.primitive_ops import PauliOp
+# from qiskit.opflow.primitive_ops import PauliOp
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators import Pauli
-from qiskit.opflow.list_ops.summed_op import SummedOp
-from qiskit.opflow.primitive_ops.pauli_sum_op import PauliSumOp
-from qiskit.opflow.converters import AbelianGrouper
+
+# from qiskit.opflow.list_ops.summed_op import SummedOp
+# from qiskit.opflow.primitive_ops.pauli_sum_op import PauliSumOp
+# from qiskit.opflow.converters import AbelianGrouper
 
 # from qiskit.opflow.converters.pauli_basis_change import PauliBasisChange
 # from qiskit.opflow.state_fns.state_fn import StateFn
